@@ -1,31 +1,11 @@
 import React from 'react';
-import styled, { css, keyframes } from 'styled-components';
+import styled, { css } from 'styled-components';
+import { spin } from './animations';
+import { SELECT_DIE } from './actions';
 
-const spin = keyframes`
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(180deg);
-    filter: blur(3px);
-  }
-  }
-  50% {
-    transform: rotate(0deg);
-    filter: blur();
-  }
-  }
-  75% {
-    transform: rotate(-180deg);
-    filter: blur(3px);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-`;
 
 const rollAnimation = css`
-  animation: ${spin} .5s infinite;
+  animation: ${spin} ease-out .3s infinite;
 `;
 
 const oneDot = css`
@@ -155,7 +135,7 @@ const EmptyDie = styled.div`
 const Die = (props) => {
   
   function clickHandler () {
-    props.selectDie(props.name, props.position, props.dots);
+    props.dispatch( {type: SELECT_DIE, payload: props.position} );
   }
 
   let dotCount = props.roll ? 6 : props.dots;

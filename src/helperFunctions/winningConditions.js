@@ -1,7 +1,16 @@
-const winningConditions = {
-  1: 100,
-  5: 50,
-}
+const winningConditions = {}
+
+winningConditions[String([])] = 0;
+winningConditions[String([5])] = 50;
+winningConditions[String([1])] = 100;
+winningConditions[String([1, 1])] = 200;
+winningConditions[String([1, 1, 5])] = 250;
+winningConditions[String([5, 5])] = 100;
+
+winningConditions[String([1, 5])] = 150;
+winningConditions[String([1, 5, 5])] = 200;
+winningConditions[String([1, 1, 5])] = 250;
+winningConditions[String([1, 1, 5, 5])] = 300;
 
 winningConditions[String([1, 1, 1])] = 1000; 
 winningConditions[String([1, 1, 1, 1])] = 2000;
