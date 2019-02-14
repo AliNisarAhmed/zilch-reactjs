@@ -35,7 +35,7 @@ const StyledApp = styled.div`
   border: 1px solid black;
 `;
 
-const DiceContainer = styled.div`
+const Container = styled.div`
   display: flex;
 `;
 
@@ -88,24 +88,29 @@ function App () {
   const [ currentScore, setCurrentScore ] = React.useState(0);
   const [ totalPoints, setTotalPoints ] = React.useState(0);
   const [ lockedScore, setLockedScore ] = React.useState(0);
-  const [ gameState, setGameState ] = React.useState('INIT');  // INIT | PLAYER_TURN | 
+  const [ gameState, setGameState ] = React.useState('INIT');  // INIT | PLAYER_TURN  
   const [ gameStatusMsg, setGameStatusMsg ] = React.useState('');
+  const [ turn, setTurn ] = React.useState(true)  // true | false == Player1 | Player2
+  const [ p1Banks, setP1Banks ] = React.useState([]);
+  const [ p2Banks, setP2Banks ] = React.useState([]);
 
   async function handleRollButtonClick() {
     if (currentScore > 0 || gameState === "INIT") {
       changeRollDiceStatus(true);
-      await timeout(1000);
+      await timeout(800);
       dispatch( {type: ROLL_DICE, payload: generateRandomDice(dice)} );
       changeRollDiceStatus(false);
     }
   }
 
   function bankPoints() {
-    setTotalPoints(prevTotalPoints => prevTotalPoints + lockedScore + currentScore);
-    setCurrentScore(0);
-    setLockedScore(0);
-    setGameState("INIT");
-    dispatch({ type: RESET, payload: initialState })
+    if (lockedScore + currentScore >= 300) {
+      setTotalPoints(lockedScore + currentScore);
+      setCurrentScore(0);
+      setLockedScore(0);
+      setGameState("INIT");
+      dispatch({ type: RESET, payload: initialState })
+    }
   }
 
   // calulcating score after each update to dice array
@@ -120,12 +125,13 @@ function App () {
     if (!rollDiceStatus) {
       console.log('start');
       dispatch( {type: LOCK_SELECTED} );
-      setLockedScore(lockedScore + currentScore);
+      setLockedScore(prev => prev + currentScore);
       setCurrentScore(0);
       if (hasPlayerZilched(dice)) {
         console.log("ZILCH!!!");
         setCurrentScore(0);
         setLockedScore(0);
+        setTotalPoints("ZILCH");
         dispatch({type: RESET, payload: initialState});
         setGameState("INIT");
         setGameStatusMsg("ZILCH!!!");
@@ -135,11 +141,34 @@ function App () {
     }
   }, [rollDiceStatus]);
 
+  // Banking points for respective players after click on bank points button
+  React.useEffect(() => {
+    if (totalPoints > 0 || totalPoints === "ZILCH") {
+      if (turn) {
+        setP1Banks(prev => [...prev, totalPoints])
+      } else {
+        setP2Banks(prev => [...prev, totalPoints])
+      }
+      setTotalPoints(0);
+      setTurn(prev => !prev);
+    }
+  }, [totalPoints])
+
+
+  // Async function to clear the game status message after certain time
+  async function clearGameStatusMsg () {
+    await timeout(1500);
+    setGameStatusMsg('');
+  }
+  // clear gameStatusMsg hook
+  React.useEffect(() => {
+    clearGameStatusMsg();
+  })
 
   return (
     <StyledApp>
       <Main />
-      <DiceContainer>
+      <Container>
         <StyledDice>
           {
             dice.map(dieObj => dieObj.selected ? {...dieObj, dots: null}: dieObj).map((dieObj, i) => (
@@ -154,21 +183,18 @@ function App () {
             ))
           }
         </StyledDice>
-        <div>Current Score: {currentScore}</div>
-        <div>Locked Score: {lockedScore}</div>
         <Controls>
           <Button clickHandler={handleRollButtonClick} gameState={gameState} name="roll">Roll</Button>
           <h4>{gameStatusMsg}</h4>
           <Button clickHandler={bankPoints} gameState={gameState} name="bank">Bank Points</Button>
         </Controls>
-        <h3>Total Points: {totalPoints}</h3>
-      </DiceContainer>
+      </Container>
       <StyledScoresheet>
         <h3>Target: 10,000 points</h3>
-        <h5>Current Score: {currentScore}</h5>
+        <h5>Current Points: {currentScore}</h5>
         <h5>Locked Points: {lockedScore}</h5>
         <h5><b>Total Score: {lockedScore + currentScore}</b></h5>
-        <Scoresheet></Scoresheet>
+        <Scoresheet p1Banks={p1Banks} p2Banks={p2Banks}></Scoresheet>
       </StyledScoresheet>
     </StyledApp>
   );
