@@ -37,11 +37,10 @@ export const spin = keyframes`
 
 export const callToAction = keyframes`
   from {
-    opacity: 1;
-    transform: scale(1);
+    opacity: 0.8;
   }
   to {
     opacity: 0;
-    transform: scale(1.5);
+    transform: scaleX(1.5) scaleY(2);
   }
 `;

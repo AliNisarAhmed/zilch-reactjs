@@ -18,6 +18,7 @@ const twoDots = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-flow: row;
   
   .dots {
     margin: 4px;
@@ -50,6 +51,11 @@ const fourDots = css`
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-items: center;
+
+  .dots {
+    width: 11px;
+    height: 11px;
+  }
 `;
 
 const fiveDots = css`
@@ -135,10 +141,12 @@ const EmptyDie = styled.div`
 const Die = (props) => {
   
   function clickHandler () {
-    props.dispatch( {type: SELECT_DIE, payload: props.position} );
+    if (props.gameState !== "INIT") {
+      props.dispatch( {type: SELECT_DIE, payload: props.position} );
+    }
   }
 
-  let dotCount = props.roll ? 6 : props.dots;
+  let dotCount = props.roll ? 5 : props.dots;
   if (props.dots === null) {
     return <EmptyDie />
   } else {
@@ -154,7 +162,7 @@ const Die = (props) => {
 
 export default Die;
 
-
+// used to select one of the six css style groups based on number of dots
 function dotsGen (dots) {
   switch (dots) {
     case 1:
