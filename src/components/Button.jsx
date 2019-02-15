@@ -1,6 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components';
-import { callToAction } from './animations'
+import { callToAction } from '../constants/animations'
 
 const animateButton = css`
   animation: ${callToAction} 1s infinite backwards;
@@ -35,7 +35,7 @@ const StyledButton = styled.button`
     background-color: blue;
     border-radius: 8px;
     ${props => 
-        props.gameState === "INIT" && props.name === "roll" ?
+        (props.gameState === "INIT" || props.gameState === "FREE_ROLL") && props.name === "roll" ?
         animateButton :
         null
     }

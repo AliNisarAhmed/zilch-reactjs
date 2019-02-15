@@ -1,7 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { spin } from './animations';
-import { SELECT_DIE } from './actions';
+import { spin } from '../constants/animations';
+import { SELECT_DIE } from '../constants/actions';
 
 
 const rollAnimation = css`

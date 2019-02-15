@@ -7,9 +7,9 @@ import compareArrays from "./compareArrays";
 
 export default function hasPlayerZilched(diceArr) {
   let filtered = diceArr.filter(dieObj => !dieObj.selected);  // keeping only non=selected 
-  let diceObj = diceArrToObj(filtered);
+  let diceObj = diceArrToObj(filtered);  // converting diceArray to DIce Object containing counts for each die roll
   let keys = Object.keys(diceObj).sort();
-  if (keys.includes("1") || keys.includes("5")) {  // single 1 or 5 means player has scored something.
+  if (keys.length === 6 || keys.includes("1") || keys.includes("5")) {  // single 1 or 5 means player has scored something.
     return false;
   }
 
@@ -30,6 +30,11 @@ export default function hasPlayerZilched(diceArr) {
   }
   // check for three pairs
   if (keys.length === 3 && compareArrays(values, [2, 2, 2])) {
+    return false;
+  }
+
+  // if none of the above holds, but the length of diceArr is still six, that means the player has scored "NO SCORING DIE"
+  if (keys.length === 6) {
     return false;
   }
 
