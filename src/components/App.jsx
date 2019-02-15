@@ -10,7 +10,7 @@ import Button from './Button';
 import calculateScore from '../helperFunctions/calculateScore';
 import hasPlayerZilched from '../helperFunctions/hasPlayerZilched';
 import Scoresheet from './Scoresheet';
-import { FREE_ROLL } from '../constants/stringConstants';
+import { FREE_ROLL, INIT, PLAYER_TURN } from '../constants/stringConstants';
 
 
 const Main = createGlobalStyle`
@@ -96,20 +96,29 @@ function App () {
   const [ lockedDieCount, setLockedDieCount ] = React.useState(0);  // used to count the number of scoring die
   // const [ freeRoll, setFreeRoll ] = React.useState(false);  // if countScoringDie reaches 6 the player has earned FREE ROLL
 
+  async function rollDice() {
+    changeRollDiceStatus(true);
+    await timeout(300);
+    dispatch( {type: ROLL_DICE, payload: generateRandomDice(dice)} );
+    changeRollDiceStatus(false);
+  }
+
   async function handleRollButtonClick() {  // this function handles dice roll
     // roll is only allowed if currentScore is > 0, i.e. player has selected at least one scoring die, or gameState is in INIT
     if (currentScore > 0 || gameState === "INIT" || gameState === FREE_ROLL) {  
       if (gameState === FREE_ROLL) {
-        dispatch({ type: RESET, payload: initialState });
+        setLockedScore(prev => prev + currentScore);
+        setCurrentScore(0);
+        setCurrentDieCount(0);
+        setLockedDieCount(0);
+        dispatch({ type: UNSELECT_ALL });
+      } else {
+        await rollDice();
       } 
-      changeRollDiceStatus(true);
-      await timeout(300);
-      dispatch( {type: ROLL_DICE, payload: generateRandomDice(dice)} );
-      changeRollDiceStatus(false);
     }
   }
 
-  // Handles Bank Points Button click
+  // Handles Bank Points Button clickabout:blank
   function bankPoints() {
     // Banking is allowed only if the player has TotalScore of 300 or more in the current turn
     if (lockedScore + currentScore >= 300) {
@@ -123,11 +132,15 @@ function App () {
 
   // calulcating score after each update to dice array -- depends on [dice]
   React.useEffect(() => {
-    if (dice.some(dieObj => dieObj.selected)) {
+    if (gameState === PLAYER_TURN) {
       let { score, count } = calculateScore(dice);
       setCurrentScore(score);
       setCurrentDieCount(count);
       console.log("scoring die", currentDieCount);
+    }
+
+    else if (gameState === FREE_ROLL) {
+      rollDice();
     }
   }, [dice])
 
@@ -145,36 +158,31 @@ function App () {
   React.useEffect(() => {
     console.log('roll clicked')
     if (!rollDiceStatus) {
-      console.log('inside !rollDiceStatus')
-      // checking immediately after dice roll
-      if (gameState === FREE_ROLL) {
-        console.log('free roll path inside roll clicked');
-        setGameState("INIT");
-        dispatch( {type: ROLL_DICE, payload: generateRandomDice(dice)} );
-        setLockedScore(prev => prev + currentScore);
-        setLockedDieCount(prev => prev + currentDieCount);
-        setCurrentScore(0);
-        setCurrentDieCount(0);
-      } else if (gameState === "PLAYER_TURN" && currentScore > 0) {
-        console.log('inside not FREE_ROLL');
+      if (gameState === INIT) { 
+        // setGameState(PLAYER_TURN);
+      } else if (gameState === PLAYER_TURN) {  // this point will be reached when player has clicked on roll after selecting some scoring die
         dispatch({ type: LOCK_SELECTED });
         setLockedScore(prev => prev + currentScore);
         setLockedDieCount(prev => prev + currentDieCount);
         setCurrentScore(0);
         setCurrentDieCount(0);
         if (hasPlayerZilched(dice)) {
-          console.log("ZILCH!!!");
-          setCurrentScore(0);
-          setLockedScore(0);
+          console.log("ZILCH!");
           setTotalPoints("ZILCH");
           dispatch({type: RESET, payload: initialState});
           setGameState("INIT");
           setGameStatusMsg("ZILCH!!!");
+          setCurrentScore(0);
+          setLockedScore(0);
+          setCurrentDieCount(0);
+          setLockedDieCount(0);
         }
+      } else if (gameState === FREE_ROLL) {
+        setGameState(PLAYER_TURN);
       }
-    } else if (rollDiceStatus && gameState === "INIT") {
+    } else if (rollDiceStatus && gameState === "INIT") { // this point will be reached at the start
       console.log('inside player_turn branch');
-      setGameState("PLAYER_TURN")
+      setGameState(PLAYER_TURN);
     }
   }, [rollDiceStatus]);
 
