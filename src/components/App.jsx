@@ -10,8 +10,10 @@ import Button from './Button';
 import calculateScore from '../helperFunctions/calculateScore';
 import hasPlayerZilched from '../helperFunctions/hasPlayerZilched';
 import Scoresheet from './Scoresheet';
-import { FREE_ROLL, INIT, PLAYER_TURN } from '../constants/stringConstants';
+import { FREE_ROLL, INIT, PLAYER_TURN, RESTART_REQD } from '../constants/stringConstants';
+import calculateTotalScore from '../helperFunctions/calculateTotalScore';
 
+const winCondition = 5000;
 
 const Main = createGlobalStyle`
   html {
@@ -37,7 +39,33 @@ const StyledApp = styled.div`
 `;
 
 const Container = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 80px 1fr 80px;
+`;
+
+const StyledGameStatusMsg = styled.p`
+  grid-column: 2 / 4;
+  grid-row: 1 / 2;
+  font-weight: bold;
+`;
+
+const Controls = styled.div`
+  grid-column: 2 / 4;
+  grid-row: 3 / 4;
   display: flex;
+  justify-content: space-between;
+`;
+
+const StyledDiceContainer = styled.div`
+  grid-column: 2 / 4;
+  grid-row: 2 / 3;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content:center;
+  position: relative;
+  border: 1px solid rebeccapurple;
+  padding: 10px;
 `;
 
 const StyledScoresheet = styled.div`
@@ -47,18 +75,6 @@ const StyledScoresheet = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: repeat(5, 50px) 1fr;
 `;
-
-const StyledDice = styled.div`
-  display: flex;
-  flex-flow: column;
-`;
-
-const Controls = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-
 
 // ------------------------------------------------------------ //
 
@@ -94,7 +110,6 @@ function App () {
   const [ p2Banks, setP2Banks ] = React.useState([]);  // same array as above for player2
   const [ currentDieCount, setCurrentDieCount ] = React.useState(0);  // used to count the number of scoring die
   const [ lockedDieCount, setLockedDieCount ] = React.useState(0);  // used to count the number of scoring die
-  // const [ freeRoll, setFreeRoll ] = React.useState(false);  // if countScoringDie reaches 6 the player has earned FREE ROLL
 
   async function rollDice() {
     changeRollDiceStatus(true);
@@ -128,6 +143,18 @@ function App () {
       setGameState("INIT");
       dispatch({ type: RESET, payload: initialState })
     }
+  }
+
+  function handleRestart () {
+    setGameState(INIT);
+    dispatch({ type: RESET, payload: initialState });
+    setCurrentScore(0);
+    setTurn(true);
+    setCurrentDieCount(0);
+    setLockedDieCount(0);
+    setLockedScore(0);
+    setP1Banks([]);
+    setP2Banks([]);
   }
 
   // calulcating score after each update to dice array -- depends on [dice]
@@ -190,9 +217,9 @@ function App () {
   React.useEffect(() => {
     if (totalPoints > 0 || totalPoints === "ZILCH") {
       if (turn) {
-        setP1Banks(prev => [...prev, totalPoints])
+        setP1Banks(prev => [...prev, totalPoints]);
       } else {
-        setP2Banks(prev => [...prev, totalPoints])
+        setP2Banks(prev => [...prev, totalPoints]);
       }
       setTotalPoints(0);
       setLockedDieCount(0);
@@ -213,7 +240,15 @@ function App () {
     } else {
       clearGameStatusMsg(1500);
     }
-  }, [gameStatusMsg])
+  }, [gameStatusMsg]);
+
+  // Checking for win
+  React.useEffect(() => {
+    if (calculateTotalScore(p1Banks) > winCondition || calculateTotalScore(p2Banks) > winCondition) {
+      setGameStatusMsg(`Player ${turn ? 1 : 2} Wins!!!`);
+      setGameState(RESTART_REQD);
+    }
+  }, [p1Banks, p2Banks])
 
 
   // ------ RENDER ----- //
@@ -221,24 +256,18 @@ function App () {
     <StyledApp>
       <Main />
       <Container>
-        <StyledDice>
+        <StyledGameStatusMsg>{gameStatusMsg}</StyledGameStatusMsg>
+        <StyledDiceContainer>
           {
-            dice.map(dieObj => dieObj.selected ? {...dieObj, dots: null}: dieObj).map((dieObj, i) => (
-              <Die dots={dieObj.dots} key={i} roll={rollDiceStatus} position={dieObj.position} dispatch={dispatch} gameState={gameState}/>
+            dice.map((die, i) => (
+              <Die key={i} dieObj={die} gameState={gameState} dispatch={dispatch} roll={rollDiceStatus} />
             ))
           }
-        </StyledDice>
-        <StyledDice>
-          {
-            dice.map(dieObj => dieObj.selected ?  dieObj: {...dieObj, dots: null}).map((dieObj, i) => (
-              <Die dots={dieObj.dots} key={i} position={dieObj.position} dispatch={dispatch} locked={dieObj.locked} gameState={gameState}/>
-            ))
-          }
-        </StyledDice>
+        </StyledDiceContainer>  
         <Controls>
           <Button clickHandler={handleRollButtonClick} gameState={gameState} name="roll">Roll</Button>
-          <h4>{gameStatusMsg}</h4>
           <Button clickHandler={bankPoints} gameState={gameState} name="bank">Bank Points</Button>
+          <Button clickHandler={handleRestart} gameState={gameState} name="restart">Restart</Button>
         </Controls>
       </Container>
       <StyledScoresheet>

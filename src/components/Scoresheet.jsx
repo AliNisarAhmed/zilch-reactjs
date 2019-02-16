@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components';
 
 import ScoreTile from './ScoreTile';
+import calculateTotalScore from '../helperFunctions/calculateTotalScore';
 
 const ScoreContainer = styled.div`
   display: grid;
@@ -28,6 +29,8 @@ const Scores = styled.div`
   grid-column: 1 / 3;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  max-height: 300px;
+  overflow: scroll;
 `;
 
 const TotalScore1 = styled.p`
@@ -54,8 +57,8 @@ export default function Scoresheet({ p1Banks, p2Banks }) {
           <ScoreTile score={p2Banks} />
         </div>
       </Scores>
-      <TotalScore1>= {p1Banks.filter(x => typeof x === "number").reduce((a, x) => a + x, 0)}</TotalScore1>
-      <TotalScore2>= {p2Banks.filter(x => typeof x === "number").reduce((a, x) => a + x, 0)}</TotalScore2>
+      <TotalScore1>= {calculateTotalScore(p1Banks)}</TotalScore1>
+      <TotalScore2>= {calculateTotalScore(p2Banks)}</TotalScore2>
     </ScoreContainer>
   )
 }

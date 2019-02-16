@@ -106,20 +106,38 @@ const sixDots = css`
   }
 `;
 
+const hoveredDieStyles = css`
+  transform: scale(1.1);
+  box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+`;
+
 const StyledDie = styled.div`
   width: 50px;
   height: 50px;
+  margin-bottom: 5px;
   border: 1px solid black;
   border-radius: 30%;
   padding: 5px;
   background: #282c32;
-  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  transition: 
+    transform .2s,
+    left .4s;
 
   display: flex;
   flex-flow: column;
 
+  position: absolute;
+  left: ${props => props.dieObj.selected ? "60%": "10%"};
+  top: ${props => String((props.dieObj.position - 1) * 16.5) + "%"};
+
   ${(props) => dotsGen(props.dots)}
-  ${props => props.roll ? rollAnimation: null}
+  ${props => props.roll && !props.dieObj.selected ? rollAnimation: null}
+
+  :hover {
+    ${props => props.gameState !== "INIT" ? hoveredDieStyles: null}
+  }
 `;
 
 const Dot = styled.div`
@@ -129,35 +147,24 @@ const Dot = styled.div`
   background: white;
 `;
 
-const EmptyDie = styled.div`
-  width: 60px;
-  height: 60px;
-  background: white;
-  border: 1px solid black;
-  border-radius: 30%;
-`;
 
-
-const Die = (props) => {
+const Die = ({ gameState, dispatch, dieObj, roll }) => {
   
   function clickHandler () {
-    if (props.gameState !== "INIT") {
-      props.dispatch( {type: SELECT_DIE, payload: props.position} );
+    if (gameState !== "INIT") {
+      dispatch( {type: SELECT_DIE, payload: dieObj.position} );
     }
   }
 
-  let dotCount = props.roll ? 5 : props.dots;
-  if (props.dots === null) {
-    return <EmptyDie />
-  } else {
-    return (
-      <StyledDie dots={dotCount} roll={props.roll} onClick={clickHandler}>
-        {new Array(dotCount).fill(1).map((elem, i) => (
-          <Dot key={i} className={`dots dots--${i}`} />
-        ))}
-      </StyledDie>
-    );
-  }
+  let dotCount = roll && !dieObj.selected ? 5 : dieObj.dots;
+  
+  return (
+    <StyledDie dots={dotCount} dieObj={dieObj} roll={roll} onClick={clickHandler} gameState={gameState}>
+      {new Array(dotCount).fill(1).map((elem, i) => (
+        <Dot key={i} className={`dots dots--${i}`} />
+      ))}
+    </StyledDie>
+  );
 };
 
 export default Die;

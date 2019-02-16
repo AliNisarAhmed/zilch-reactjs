@@ -6,9 +6,13 @@ const animateButton = css`
   animation: ${callToAction} 1s infinite backwards;
 `;
 
+const hideButton = css`
+  display: none;
+`;
+
 const StyledButton = styled.button`
   display: inline-block;  
-  width: 200px;
+  min-width: 100px;
   height: 50px;
   color: blue;
   background-color: whitesmoke;
@@ -18,6 +22,12 @@ const StyledButton = styled.button`
   border-radius: 4px;
   margin-top: 5px;
   position: relative;
+
+  /* ${props => 
+        props.name === "restart" && props.gameState !== "RESTART_REQD" ?
+        hideButton :
+        null
+  } */
 
   :hover {
     color: whitesmoke;
@@ -36,6 +46,11 @@ const StyledButton = styled.button`
     border-radius: 8px;
     ${props => 
         (props.gameState === "INIT" || props.gameState === "FREE_ROLL") && props.name === "roll" ?
+        animateButton :
+        null
+    }
+    ${props => 
+        props.gameState === "RESTART_REQD" && props.name === "restart" ?
         animateButton :
         null
     }
