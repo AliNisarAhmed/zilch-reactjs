@@ -19,12 +19,17 @@ const Main = createGlobalStyle`
   html {
     box-sizing: border-box;
   }
+
   *, *::before, *::active {
     box-sizing: inherit;
   }
+  
   body {
     margin: 0;
     padding: 0;
+    background-image: url('../assets/table-top.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 `;
 

@@ -9,13 +9,14 @@ export default function hasPlayerZilched(diceArr) {
   let filtered = diceArr.filter(dieObj => !dieObj.selected);  // keeping only non=selected 
   let diceObj = diceArrToObj(filtered);  // converting diceArray to DIce Object containing counts for each die roll
   let keys = Object.keys(diceObj).sort();
-  if (keys.length === 6 || keys.includes("1") || keys.includes("5")) {  // single 1 or 5 means player has scored something.
+  if (filtered.length === 6 || keys.includes("1") || keys.includes("5")) {  // single 1 or 5 means player has scored something.
     return false;
   }
 
   
   // checking for three or more of a kind
   let values = Object.values(diceObj);
+
   for (let val of values) {
     if (val >= 3) {
       return false;

@@ -10,13 +10,16 @@ const hideButton = css`
   display: none;
 `;
 
+function generateColorBasedOnProps (props) {
+  if (props.name === "roll") return "green";
+  if (props.name === "restart") return "red";
+  if (props.name === "bank") return "blue";
+}
+
 const StyledButton = styled.button`
   display: inline-block;  
   min-width: 100px;
   height: 50px;
-  color: blue;
-  background-color: whitesmoke;
-  border: 1px solid blue;
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 4px;
@@ -29,9 +32,12 @@ const StyledButton = styled.button`
         null
   } */
 
+  color: ${props => generateColorBasedOnProps(props)};
+  border: 1px solid ${props => generateColorBasedOnProps(props)};
+
   :hover {
     color: whitesmoke;
-    background-color: blue;
+    background-color: ${props => generateColorBasedOnProps(props)};
   }
 
   ::after {
@@ -42,7 +48,7 @@ const StyledButton = styled.button`
     position: absolute;
     top: 0;
     left: 0;
-    background-color: blue;
+    background-color: ${props => generateColorBasedOnProps(props)};
     border-radius: 8px;
     ${props => 
         (props.gameState === "INIT" || props.gameState === "FREE_ROLL") && props.name === "roll" ?

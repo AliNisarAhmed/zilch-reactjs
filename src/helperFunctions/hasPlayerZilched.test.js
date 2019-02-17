@@ -21,7 +21,7 @@ describe("Testing hasPlayerZilched function", () => {
   test("Should return true with dice rolls of [3, 3, 4, 4, 6, 2]", () => {
     let diceArr = [{dots:3,selected:false},{dots:3,selected:false},{dots:4,selected:false},{dots:4,selected:false},{dots:6,selected:false},{dots:2,selected:false}];
     let result = hasPlayerZilched(diceArr);
-    expect(result).toBeTruthy();
+    expect(result).toBeFalsy();
   });
   test("Should return false with a straight", () => {
     let diceArr = [{dots:3,selected:false},{dots:4,selected:false},{dots:6,selected:false},{dots:5,selected:false},{dots:1,selected:false},{dots:2,selected:false}];
