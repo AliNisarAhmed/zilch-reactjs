@@ -13,40 +13,34 @@ import Scoresheet from './Scoresheet';
 import { FREE_ROLL, INIT, PLAYER_TURN, RESTART_REQD } from '../constants/stringConstants';
 import calculateTotalScore from '../helperFunctions/calculateTotalScore';
 
+import paper from '../assets/paper3.png';
+
 const winCondition = 5000;
 
-const Main = createGlobalStyle`
-  html {
-    box-sizing: border-box;
-  }
-
-  *, *::before, *::active {
-    box-sizing: inherit;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    background-image: url('../assets/table-top.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
-`;
 
 const StyledApp = styled.div`
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-template-rows: 100vh;
-  width: 85%;
-  height: 100%;
+  max-width: 1200px;
+  /* height: 100%; */
   margin: 0 auto;
   border: 1px solid black;
+  font-family: 'Shadows Into Light', cursive;
+
+  @media only screen and (max-width: 1200px) {
+    grid-template-columns: 4fr 3fr
+  }
 `;
 
 const Container = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 80px 1fr 80px;
+  
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 const StyledGameStatusMsg = styled.p`
@@ -59,7 +53,10 @@ const Controls = styled.div`
   grid-column: 2 / 4;
   grid-row: 3 / 4;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  @media screen and (max-width: 1200px) {
+    grid-column: 1 / 3;
+  }
 `;
 
 const StyledDiceContainer = styled.div`
@@ -71,14 +68,45 @@ const StyledDiceContainer = styled.div`
   position: relative;
   border: 1px solid rebeccapurple;
   padding: 10px;
+  @media screen and (max-width: 1200px) {
+    grid-column: 1 / 3;
+  }
 `;
 
 const StyledScoresheet = styled.div`
-  height: 100%;
+  height: 90%;
+  margin-top: 20px;
   border-left: 1px solid black;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(5, 50px) 1fr;
+  color: black;
+  background-image: url(${paper});
+  font-size: 20px;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
+  padding: 0 10px 5px 10px;
+`;
+
+const StyledTarget = styled.p`
+  font-size: 30px;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+`;
+
+const StyledTurn = styled.p`
+  font-size: 26px;
+  margin: 15px 0 0 0;
+`;
+
+const StyledText = styled.p`
+  font-size: 20px;
+  margin: 15px 0;
+`;
+
+const StyledSpan = styled.span`
+  font-size: 26px;
 `;
 
 // ------------------------------------------------------------ //
@@ -163,7 +191,7 @@ function App () {
   }
 
   // calulcating score after each update to dice array -- depends on [dice]
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (gameState === PLAYER_TURN) {
       let { score, count } = calculateScore(dice);
       setCurrentScore(score);
@@ -192,7 +220,8 @@ function App () {
     if (!rollDiceStatus) {
       if (gameState === INIT) { 
         // setGameState(PLAYER_TURN);
-      } else if (gameState === PLAYER_TURN) {  // this point will be reached when player has clicked on roll after selecting some scoring die
+      } else if (gameState === PLAYER_TURN && dice.filter(die => die.selected).length > 0) {  // this point will be reached when player has clicked on roll after selecting some scoring die
+        console.log("before lock selected");
         dispatch({ type: LOCK_SELECTED });
         setLockedScore(prev => prev + currentScore);
         setLockedDieCount(prev => prev + currentDieCount);
@@ -210,6 +239,7 @@ function App () {
           setLockedDieCount(0);
         }
       } else if (gameState === FREE_ROLL) {
+        setGameStatusMsg('');
         setGameState(PLAYER_TURN);
       }
     } else if (rollDiceStatus && gameState === "INIT") { // this point will be reached at the start
@@ -241,7 +271,7 @@ function App () {
   // clear gameStatusMsg hook
   React.useEffect(() => {
     if (gameStatusMsg === FREE_ROLL) {
-      clearGameStatusMsg(4000);
+
     } else {
       clearGameStatusMsg(1500);
     }
@@ -259,7 +289,6 @@ function App () {
   // ------ RENDER ----- //
   return (
     <StyledApp>
-      <Main />
       <Container>
         <StyledGameStatusMsg>{gameStatusMsg}</StyledGameStatusMsg>
         <StyledDiceContainer>
@@ -271,16 +300,16 @@ function App () {
         </StyledDiceContainer>  
         <Controls>
           <Button clickHandler={handleRollButtonClick} gameState={gameState} name="roll">Roll</Button>
-          <Button clickHandler={bankPoints} gameState={gameState} name="bank">Bank Points</Button>
+          <Button clickHandler={bankPoints} gameState={gameState} name="bank">Bank</Button>
           <Button clickHandler={handleRestart} gameState={gameState} name="restart">Restart</Button>
         </Controls>
       </Container>
       <StyledScoresheet>
-        <h3>Target: 10,000 points</h3>
-        <h4>{turn ? "Player 1" : "Player 2"}</h4>
-        <h5>Current Points: {currentScore}</h5>
-        <h5>Locked Points: {lockedScore}</h5>
-        <h5><b>Total Score: {lockedScore + currentScore}</b></h5>
+        <StyledTarget>Target: 10,000</StyledTarget>
+        <StyledTurn>{turn ? "Player 1" : "Player 2"}'s turn</StyledTurn>
+        <StyledText>Current Points: <StyledSpan>{currentScore}</StyledSpan></StyledText>
+        <StyledText>Locked Points: <StyledSpan>{lockedScore}</StyledSpan></StyledText>
+        <StyledText><b>Total Score: <StyledSpan>{lockedScore + currentScore}</StyledSpan></b></StyledText>
         <Scoresheet p1Banks={p1Banks} p2Banks={p2Banks}></Scoresheet>
       </StyledScoresheet>
     </StyledApp>

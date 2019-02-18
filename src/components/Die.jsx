@@ -116,7 +116,7 @@ const StyledDie = styled.div`
   width: 50px;
   height: 50px;
   margin-bottom: 5px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   border-radius: 30%;
   padding: 5px;
   background: #282c32;

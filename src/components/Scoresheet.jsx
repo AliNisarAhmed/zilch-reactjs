@@ -8,7 +8,7 @@ const ScoreContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 50px 1fr 50px;
-  border: 1px solid red;
+  /* border: 1px solid red; */
   text-align: center;
 `;
 
@@ -16,13 +16,14 @@ const StyledLabel1 = styled.p`
   display: inline-block;
   grid-row: 1 / 2;
   grid-column: 1 / 2;
-  border-bottom: 1px solid blue;
+  margin: 5px 0 0 0;
+  /* border-bottom: 1px solid blue; */
 `;
 
 const StyledLabel2 = styled(StyledLabel1)`
   grid-row: 1 / 2;
   grid-column: 2 / 3;
-  border-left: 1px solid blue;
+  /* border-left: 1px solid blue; */
 `;
 
 const Scores = styled.div`
@@ -36,12 +37,14 @@ const Scores = styled.div`
 const TotalScore1 = styled.p`
   display: inline-block;
   grid-column: 1 / 2;
-  border-top: 1px solid black;
+  font-size: 20px;
+  font-weight: bold;
+  /* border-top: 1px solid black; */
 `;
 
 const TotalScore2 = styled(TotalScore1)`
   grid-column: 2 / 3;
-  border-left: 1px solid black;
+  /* border-left: 1px solid black; */
 `;
 
 export default function Scoresheet({ p1Banks, p2Banks }) {

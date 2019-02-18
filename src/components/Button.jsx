@@ -25,18 +25,20 @@ const StyledButton = styled.button`
   border-radius: 4px;
   margin-top: 5px;
   position: relative;
+  font-size: 20px;
 
-  /* ${props => 
-        props.name === "restart" && props.gameState !== "RESTART_REQD" ?
-        hideButton :
-        null
-  } */
+  @media screen and (max-width: 650px) {
+    min-width: 60px;
+    height: 30px;
+    font-size: 12px;
+    padding: 1px 3px;
+  }
 
   color: ${props => generateColorBasedOnProps(props)};
   border: 1px solid ${props => generateColorBasedOnProps(props)};
 
   :hover {
-    color: whitesmoke;
+    color: white;
     background-color: ${props => generateColorBasedOnProps(props)};
   }
 
