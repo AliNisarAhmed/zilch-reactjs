@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 
 import Die from './Die';
 import generateRandomDice from '../helperFunctions/generateRandomDice';
@@ -23,13 +23,15 @@ const StyledApp = styled.div`
   grid-template-columns: 2fr 1fr;
   grid-template-rows: 100vh;
   max-width: 1200px;
-  /* height: 100%; */
   margin: 0 auto;
   border: 1px solid black;
   font-family: 'Shadows Into Light', cursive;
 
   @media only screen and (max-width: 1200px) {
     grid-template-columns: 4fr 3fr
+  }
+  @media only screen and (max-width: 450px) {
+    grid-template-columns: 1fr 200px;
   }
 `;
 
@@ -41,12 +43,21 @@ const Container = styled.div`
   @media screen and (max-width: 1200px) {
     grid-template-columns: 1fr 1fr;
   }
+  @media screen and (max-width: 600px) {
+    grid-template-rows: 30px 1fr 40px;
+  }
+  @media only screen and (max-width: 400px) {
+    grid-template-columns: 100vw 0;
+  }
 `;
 
 const StyledGameStatusMsg = styled.p`
   grid-column: 2 / 4;
   grid-row: 1 / 2;
   font-weight: bold;
+  font-size: 30px;
+  color: white;
+  text-align: center;
 `;
 
 const Controls = styled.div`
@@ -66,7 +77,6 @@ const StyledDiceContainer = styled.div`
   flex-flow: column nowrap;
   justify-content:center;
   position: relative;
-  border: 1px solid rebeccapurple;
   padding: 10px;
   @media screen and (max-width: 1200px) {
     grid-column: 1 / 3;
@@ -74,9 +84,9 @@ const StyledDiceContainer = styled.div`
 `;
 
 const StyledScoresheet = styled.div`
-  height: 90%;
+  position: relative;
+  height: 95%;
   margin-top: 20px;
-  border-left: 1px solid black;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: repeat(5, 50px) 1fr;
@@ -87,6 +97,10 @@ const StyledScoresheet = styled.div`
   overflow: hidden;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
   padding: 0 10px 5px 10px;
+  @media only screen and (max-width: 400px) {
+    min-width: 200px;
+    transform: translateX(200px);
+  }
 `;
 
 const StyledTarget = styled.p`
@@ -107,6 +121,26 @@ const StyledText = styled.p`
 
 const StyledSpan = styled.span`
   font-size: 26px;
+`;
+
+const ToggleScoreSheet = styled.button`
+  display: none;
+  cursor: pointer;
+  @media only screen and (max-width: 400px) {
+    display: inline-block;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    border: none;
+    top: 20%;
+    padding: 0;
+    height: 50px;
+    right: 0;
+    font-size: 18px;
+    border-radius: 8px 0 0 8px;
+    width: 20px;
+    cursor: pointer;
+  }
 `;
 
 // ------------------------------------------------------------ //
@@ -190,13 +224,21 @@ function App () {
     setP2Banks([]);
   }
 
+  function handleToggleScoresheet () {
+    let scoresheet = document.querySelector('#scoresheet');
+    console.log("scoresheet");
+    scoresheet.style['transform'] = "translateX(-200px)";
+  }
+
+  // ------------------------------ EFFECTS -----------------------------------------//
+
   // calulcating score after each update to dice array -- depends on [dice]
   React.useLayoutEffect(() => {
     if (gameState === PLAYER_TURN) {
       let { score, count } = calculateScore(dice);
       setCurrentScore(score);
       setCurrentDieCount(count);
-      console.log("scoring die", currentDieCount);
+      // console.log("scoring die", currentDieCount);
     }
 
     else if (gameState === FREE_ROLL) {
@@ -208,7 +250,7 @@ function App () {
   React.useEffect(() => {
     if (gameState !== FREE_ROLL && lockedDieCount + currentDieCount === 6) {
       // setFreeRoll(true);
-      console.log('free roll');
+      // console.log('free roll');
       setGameState(FREE_ROLL);
       setGameStatusMsg(FREE_ROLL);
     }
@@ -216,19 +258,19 @@ function App () {
 
   // Locking the selected dice when user clicks on roll
   React.useEffect(() => {
-    console.log('roll clicked')
+    // console.log('roll clicked')
     if (!rollDiceStatus) {
       if (gameState === INIT) { 
         // setGameState(PLAYER_TURN);
       } else if (gameState === PLAYER_TURN && dice.filter(die => die.selected).length > 0) {  // this point will be reached when player has clicked on roll after selecting some scoring die
-        console.log("before lock selected");
+        // console.log("before lock selected");
         dispatch({ type: LOCK_SELECTED });
         setLockedScore(prev => prev + currentScore);
         setLockedDieCount(prev => prev + currentDieCount);
         setCurrentScore(0);
         setCurrentDieCount(0);
         if (hasPlayerZilched(dice)) {
-          console.log("ZILCH!");
+          // console.log("ZILCH!");
           setTotalPoints("ZILCH");
           dispatch({type: RESET, payload: initialState});
           setGameState("INIT");
@@ -243,7 +285,7 @@ function App () {
         setGameState(PLAYER_TURN);
       }
     } else if (rollDiceStatus && gameState === "INIT") { // this point will be reached at the start
-      console.log('inside player_turn branch');
+      // console.log('inside player_turn branch');
       setGameState(PLAYER_TURN);
     }
   }, [rollDiceStatus]);
@@ -289,7 +331,8 @@ function App () {
   // ------ RENDER ----- //
   return (
     <StyledApp>
-      <Container>
+    <Container>
+        <ToggleScoreSheet id="toggleScoresheet" onClick={handleToggleScoresheet}>&lt;</ToggleScoreSheet>
         <StyledGameStatusMsg>{gameStatusMsg}</StyledGameStatusMsg>
         <StyledDiceContainer>
           {
@@ -304,7 +347,7 @@ function App () {
           <Button clickHandler={handleRestart} gameState={gameState} name="restart">Restart</Button>
         </Controls>
       </Container>
-      <StyledScoresheet>
+      <StyledScoresheet id="scoresheet">
         <StyledTarget>Target: 10,000</StyledTarget>
         <StyledTurn>{turn ? "Player 1" : "Player 2"}'s turn</StyledTurn>
         <StyledText>Current Points: <StyledSpan>{currentScore}</StyledSpan></StyledText>

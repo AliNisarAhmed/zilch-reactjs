@@ -67,7 +67,6 @@ const fiveDots = css`
   padding: 5px;
 
   .dots {
-    margin: 2px;
     width: 12px;
     height: 12px;
   }  
@@ -116,11 +115,10 @@ const StyledDie = styled.div`
   width: 50px;
   height: 50px;
   margin-bottom: 5px;
-  /* border: 1px solid black; */
   border-radius: 30%;
   padding: 5px;
   background: #282c32;
-  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, 0.4);
   transition: 
     transform .2s,
     left .4s;
@@ -138,6 +136,11 @@ const StyledDie = styled.div`
   :hover {
     ${props => props.gameState !== "INIT" ? hoveredDieStyles: null}
   }
+
+  @media only screen and (max-width: 800px) {
+    width: 40px;
+    height: 40px;
+  }
 `;
 
 const Dot = styled.div`
@@ -145,6 +148,10 @@ const Dot = styled.div`
   height: 35%;
   border-radius: 50%;
   background: white;
+  @media only screen and (max-width: 800px) {
+    width: 25%;
+    height: 25%;
+  }
 `;
 
 

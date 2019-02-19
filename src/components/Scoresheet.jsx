@@ -8,7 +8,6 @@ const ScoreContainer = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 50px 1fr 50px;
-  /* border: 1px solid red; */
   text-align: center;
 `;
 
@@ -17,13 +16,12 @@ const StyledLabel1 = styled.p`
   grid-row: 1 / 2;
   grid-column: 1 / 2;
   margin: 5px 0 0 0;
-  /* border-bottom: 1px solid blue; */
+  text-decoration: underline;
 `;
 
 const StyledLabel2 = styled(StyledLabel1)`
   grid-row: 1 / 2;
   grid-column: 2 / 3;
-  /* border-left: 1px solid blue; */
 `;
 
 const Scores = styled.div`
@@ -39,7 +37,6 @@ const TotalScore1 = styled.p`
   grid-column: 1 / 2;
   font-size: 20px;
   font-weight: bold;
-  /* border-top: 1px solid black; */
 `;
 
 const TotalScore2 = styled(TotalScore1)`

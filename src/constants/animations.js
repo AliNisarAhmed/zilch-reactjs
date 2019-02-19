@@ -44,3 +44,14 @@ export const callToAction = keyframes`
     transform: scaleX(1.5) scaleY(2);
   }
 `;
+
+export const zoomingText = keyframes`
+  from {
+    font-size: 56px;
+    z-index: 10;
+  }
+  to {
+    font-size: 24px;
+    z-index: 0;
+  }
+`;
