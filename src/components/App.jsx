@@ -30,8 +30,8 @@ const StyledApp = styled.div`
   @media only screen and (max-width: 1200px) {
     grid-template-columns: 4fr 3fr
   }
-  @media only screen and (max-width: 450px) {
-    grid-template-columns: 1fr 200px;
+  @media only screen and (max-width: 500px) {
+    grid-template-columns: 2fr minmax(150px, 1fr);
   }
 `;
 
@@ -44,10 +44,10 @@ const Container = styled.div`
     grid-template-columns: 1fr 1fr;
   }
   @media screen and (max-width: 600px) {
-    grid-template-rows: 30px 1fr 40px;
+    grid-template-rows: 40px 1fr 40px;
   }
-  @media only screen and (max-width: 400px) {
-    grid-template-columns: 100vw 0;
+  @media screen and (max-width: 400px) {
+    grid-template-rows: 30px 1fr 30px;
   }
 `;
 
@@ -92,55 +92,40 @@ const StyledScoresheet = styled.div`
   grid-template-rows: repeat(5, 50px) 1fr;
   color: black;
   background-image: url(${paper});
-  font-size: 20px;
   border-radius: 2px;
   overflow: hidden;
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
   padding: 0 10px 5px 10px;
-  @media only screen and (max-width: 400px) {
-    min-width: 200px;
-    transform: translateX(200px);
+  font-size: 20px;
+  @media screen and (max-width: 800px) {
+    font-size: 16px;
+  }
+  @media screen and (max-width: 600px) {
+    font-size: 12px;
+  }
+  @media screen and (max-width: 400px) {
+    font-size: 10px;
   }
 `;
 
 const StyledTarget = styled.p`
-  font-size: 30px;
+  font-size: 150%;
   font-weight: bold;
   margin: 0 0 15px 0;
 `;
 
 const StyledTurn = styled.p`
-  font-size: 26px;
+  font-size: 160%;
   margin: 15px 0 0 0;
 `;
 
 const StyledText = styled.p`
-  font-size: 20px;
-  margin: 15px 0;
+  font-size: 100%;
+  margin: 10px 0;
 `;
 
 const StyledSpan = styled.span`
-  font-size: 26px;
-`;
-
-const ToggleScoreSheet = styled.button`
-  display: none;
-  cursor: pointer;
-  @media only screen and (max-width: 400px) {
-    display: inline-block;
-    position: absolute;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    border: none;
-    top: 20%;
-    padding: 0;
-    height: 50px;
-    right: 0;
-    font-size: 18px;
-    border-radius: 8px 0 0 8px;
-    width: 20px;
-    cursor: pointer;
-  }
+  font-size: 160%;
 `;
 
 // ------------------------------------------------------------ //
@@ -222,12 +207,6 @@ function App () {
     setLockedScore(0);
     setP1Banks([]);
     setP2Banks([]);
-  }
-
-  function handleToggleScoresheet () {
-    let scoresheet = document.querySelector('#scoresheet');
-    console.log("scoresheet");
-    scoresheet.style['transform'] = "translateX(-200px)";
   }
 
   // ------------------------------ EFFECTS -----------------------------------------//
@@ -332,7 +311,6 @@ function App () {
   return (
     <StyledApp>
     <Container>
-        <ToggleScoreSheet id="toggleScoresheet" onClick={handleToggleScoresheet}>&lt;</ToggleScoreSheet>
         <StyledGameStatusMsg>{gameStatusMsg}</StyledGameStatusMsg>
         <StyledDiceContainer>
           {

@@ -12,18 +12,21 @@ const oneDot = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  .dots {
+    width: 30%;
+    height: 30%;
+  }
 `;
 
 const twoDots = css`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
   flex-flow: row;
   
   .dots {
-    margin: 4px;
-    width: 12px;
-    height: 12px;
+    width: 30%;
+    height: 30%;
   }
 `;
 
@@ -40,8 +43,8 @@ const threeDots = css`
   }
 
   .dots {
-    width: 10px;
-    height: 10px;
+    width: 26%;
+    height: 26%;
   }
 `;
 
@@ -51,10 +54,9 @@ const fourDots = css`
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-items: center;
-
   .dots {
-    width: 11px;
-    height: 11px;
+    width: 50%;
+    height: 50%;
   }
 `;
 
@@ -67,8 +69,8 @@ const fiveDots = css`
   padding: 5px;
 
   .dots {
-    width: 12px;
-    height: 12px;
+    width: 60%;
+    height: 60%;
   }  
 
   .dots--1 {
@@ -100,8 +102,8 @@ const sixDots = css`
   align-items: center;
 
   .dots {
-    width: 10px;
-    height: 10px;
+    width: 43%;
+    height: 50%;
   }
 `;
 
@@ -141,17 +143,15 @@ const StyledDie = styled.div`
     width: 40px;
     height: 40px;
   }
+  @media only screen and (max-width: 400px) {
+    width: 30px;
+    height: 30px;
+  }
 `;
 
 const Dot = styled.div`
-  width: 35%;
-  height: 35%;
   border-radius: 50%;
   background: white;
-  @media only screen and (max-width: 800px) {
-    width: 25%;
-    height: 25%;
-  }
 `;
 
 

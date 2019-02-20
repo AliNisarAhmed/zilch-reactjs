@@ -17,6 +17,7 @@ const StyledLabel1 = styled.p`
   grid-column: 1 / 2;
   margin: 5px 0 0 0;
   text-decoration: underline;
+  font-size: 100%;
 `;
 
 const StyledLabel2 = styled(StyledLabel1)`
@@ -28,20 +29,21 @@ const Scores = styled.div`
   grid-column: 1 / 3;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 20px;
   max-height: 300px;
   overflow: scroll;
+  font-size: 100%;
 `;
 
 const TotalScore1 = styled.p`
   display: inline-block;
   grid-column: 1 / 2;
-  font-size: 20px;
+  font-size: 120%;
   font-weight: bold;
 `;
 
 const TotalScore2 = styled(TotalScore1)`
   grid-column: 2 / 3;
-  /* border-left: 1px solid black; */
 `;
 
 export default function Scoresheet({ p1Banks, p2Banks }) {
