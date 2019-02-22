@@ -13,4 +13,41 @@ body {
   background-image: url(../assets/table-top.jpg);
   background-size: cover;
   background-repeat: no-repeat;
+  position: relative;
+}
+
+#modal {
+  background-color: rgba(0, 0, 0, 0.9);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  font-family: 'Shadows Into Light', cursive;
+
+  @media screen and (max-width: 900px) {
+    font-size: 12px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    font-size: 10px;
+  }
+}
+
+#modal:empty {
+  display: none;
+}
+
+#modal div {
+  background-color: white;
+  max-width: 1000px;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  width: 95%;
 }

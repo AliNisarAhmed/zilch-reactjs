@@ -14,6 +14,7 @@ import { FREE_ROLL, INIT, PLAYER_TURN, RESTART_REQD } from '../constants/stringC
 import calculateTotalScore from '../helperFunctions/calculateTotalScore';
 
 import paper from '../assets/paper3.png';
+import Rules from './Rules';
 
 const winCondition = 5000;
 
@@ -84,7 +85,6 @@ const StyledDiceContainer = styled.div`
 `;
 
 const StyledScoresheet = styled.div`
-  position: relative;
   height: 95%;
   margin-top: 20px;
   display: grid;
@@ -97,6 +97,7 @@ const StyledScoresheet = styled.div`
   box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.4);
   padding: 0 10px 5px 10px;
   font-size: 20px;
+  position: relative;
   @media screen and (max-width: 800px) {
     font-size: 16px;
   }
@@ -126,6 +127,23 @@ const StyledText = styled.p`
 
 const StyledSpan = styled.span`
   font-size: 160%;
+`;
+
+const StyledToggleModal = styled(Rules)`
+    font-size: 24px;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    border: 1px solid black;
+    border-radius: 50%;
+    padding: 2px;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    pointer-events: auto;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 10;
 `;
 
 // ------------------------------------------------------------ //
@@ -162,6 +180,7 @@ function App () {
   const [ p2Banks, setP2Banks ] = React.useState([]);  // same array as above for player2
   const [ currentDieCount, setCurrentDieCount ] = React.useState(0);  // used to count the number of scoring die
   const [ lockedDieCount, setLockedDieCount ] = React.useState(0);  // used to count the number of scoring die
+  const [ showModal, toggleModal ] = React.useState(false);
 
   async function rollDice() {
     changeRollDiceStatus(true);
@@ -208,6 +227,7 @@ function App () {
     setP1Banks([]);
     setP2Banks([]);
   }
+
 
   // ------------------------------ EFFECTS -----------------------------------------//
 
@@ -327,6 +347,7 @@ function App () {
       </Container>
       <StyledScoresheet id="scoresheet">
         <StyledTarget>Target: 10,000</StyledTarget>
+        <StyledToggleModal showModal={showModal} toggleModal={toggleModal}>?</StyledToggleModal>
         <StyledTurn>{turn ? "Player 1" : "Player 2"}'s turn</StyledTurn>
         <StyledText>Current Points: <StyledSpan>{currentScore}</StyledSpan></StyledText>
         <StyledText>Locked Points: <StyledSpan>{lockedScore}</StyledSpan></StyledText>
