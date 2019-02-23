@@ -9,11 +9,11 @@ export default class Modal extends React.Component {
     super(props);
     this.el = document.createElement('div');
     this.el.setAttribute('tabindex', 0);
-    this.el.addEventListener('blur', this.props.toggleModal);
   }
   
   componentDidMount() {
     modalRoot.appendChild(this.el);
+    this.el.focus();
   }
 
   componentWillUnmount() {

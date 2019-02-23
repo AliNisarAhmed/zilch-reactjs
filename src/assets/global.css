@@ -29,14 +29,6 @@ body {
   align-items: center;
   font-size: 16px;
   font-family: 'Shadows Into Light', cursive;
-
-  @media screen and (max-width: 900px) {
-    font-size: 12px;
-  }
-
-  @media only screen and (max-width: 600px) {
-    font-size: 10px;
-  }
 }
 
 #modal:empty {

@@ -25,7 +25,6 @@ const StyledApp = styled.div`
   grid-template-rows: 100vh;
   max-width: 1200px;
   margin: 0 auto;
-  border: 1px solid black;
   font-family: 'Shadows Into Light', cursive;
 
   @media only screen and (max-width: 1200px) {
@@ -59,6 +58,7 @@ const StyledGameStatusMsg = styled.p`
   font-size: 30px;
   color: white;
   text-align: center;
+  z-index: 10;
 `;
 
 const Controls = styled.div`
@@ -144,6 +144,11 @@ const StyledToggleModal = styled(Rules)`
     cursor: pointer;
     font-weight: bold;
     z-index: 10;
+
+    &:hover {
+      background-color: black;
+      color: white;
+    }
 `;
 
 // ------------------------------------------------------------ //
